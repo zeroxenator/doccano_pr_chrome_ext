@@ -13,14 +13,14 @@ chrome.runtime.onInstalled.addListener(function() {
 });
 
 chrome.contextMenus.onClicked.addListener(function(item, tab) {
-  
+
   if(item.pageUrl.includes('projects')){
 
     var res = item.selectionText.replace(/[\[\]']+/g, "").split(" ");
 
     var params = res[0].split("-");
-    var project = params[0];
-    var pull_no = params[1];
+    var pull_no = params.pop();
+    var project = params.join('-');
 
     var comment_id = res[1];
 
