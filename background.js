@@ -4,6 +4,7 @@
 // context menu items only need to be created at runtime.onInstalled
 chrome.runtime.onInstalled.addListener(function() {
   chrome.contextMenus.create({
+    "id": "1",
     "title": "0-Go to PR page",
     "type": 'normal',
     "contexts": ['selection'],
@@ -12,16 +13,20 @@ chrome.runtime.onInstalled.addListener(function() {
 });
 
 chrome.contextMenus.onClicked.addListener(function(item, tab) {
-  var res = item.selectionText.replace(/[\[\]']+/g, "").split(" ");
+  
+  if(item.pageUrl.includes('projects')){
 
-  var params = res[0].split("-");
-  var project = params[0];
-  var pull_no = params[1];
+    var res = item.selectionText.replace(/[\[\]']+/g, "").split(" ");
 
-  var comment_id = res[1];
+    var params = res[0].split("-");
+    var project = params[0];
+    var pull_no = params[1];
 
-  let url =
-    'https://github.com/'+project+'/pull/'+pull_no+'#discussion_r'+comment_id;
+    var comment_id = res[1];
 
-  chrome.tabs.create({url: url, index: tab.index + 1});
+    let url =
+      'https://github.com/'+project+'/pull/'+pull_no+'#discussion_r'+comment_id;
+
+    chrome.tabs.create({url: url, index: tab.index + 1});
+  }
 });
