@@ -7,26 +7,41 @@ chrome.runtime.onInstalled.addListener(function() {
     "id": "1",
     "title": "0-Go to PR page",
     "type": 'normal',
-    "contexts": ['selection'],
+    "contexts": ['page', 'selection'],
 
   });
 });
 
+// A function to use as callback
+function doStuffWithDom(url_link) {
+
+  console.log('Received: ' + url_link);
+
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      chrome.tabs.create({url: url_link, index: tabs[0].index + 1});
+    });
+}
+
 chrome.contextMenus.onClicked.addListener(function(item, tab) {
-
   if(item.pageUrl.includes('projects')){
-
-    var res = item.selectionText.replace(/[\[\]']+/g, "").split(" ");
-
-    var params = res[0].split("-");
-    var pull_no = params.pop();
-    var project = params.join('-');
-
-    var comment_id = res[1];
-
-    let url =
-      'https://github.com/'+project+'/pull/'+pull_no+'#discussion_r'+comment_id;
-
-    chrome.tabs.create({url: url, index: tab.index + 1});
+    chrome.tabs.sendMessage(tab.id, {text: "get_url_text"}, doStuffWithDom);
   }
 });
+
+chrome.browserAction.onClicked.addListener(function(tab) {
+    chrome.tabs.sendMessage(tab.id, {text: "get_url_text"}, doStuffWithDom);
+});
+
+chrome.commands.onCommand.addListener(function(command) {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {text: "get_url_text"}, doStuffWithDom);
+  });
+})
+
+function handleMessage(request, sender) {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {text: "get_url_text"}, doStuffWithDom);
+  });
+}
+
+chrome.runtime.onMessage.addListener(handleMessage);

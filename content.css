@@ -1,0 +1,15 @@
+body {
+  background-color: #63A088 !important;
+}
+
+.card-content {
+  background-color: #EDE3E9 !important;
+}
+
+.columns.is-multiline.is-gapless.is-mobile.is-vertical-center {
+  color: beige !important;
+}
+
+div#message-pane {
+  background-color: #3D556E !important;
+}
