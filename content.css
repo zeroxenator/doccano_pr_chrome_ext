@@ -13,3 +13,8 @@ body {
 div#message-pane {
   background-color: #3D556E !important;
 }
+
+.scrollable {
+  max-width: 54vw;
+  word-wrap: break-word;
+}
